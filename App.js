@@ -1,41 +1,42 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import {
   FlatList,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
 } from "react-native";
 import BlockRGB from "./components/BlockRGB";
 
-function HomeScreen() {
-  const [colorArray, setColorArray] = useState([]);
+function HomeScreen({ navigation }) {
+  const [colorArray, setColorArray] = useState([
+    { red: 255, green: 0, blue: 0, id: "0" },
+  ]);
 
   function renderItem({ item }) {
-    // function renderItem({ red: 255, green: 0, blue: 0, id: "0" }) {
-    return <BlockRGB red={item.red} green={item.green} blue={item.blue} />;
-    // return <BlockRGB red={255} green={0} blue={0} />;
+    //  item =  { red: 255, green: 0, blue: 0, id: "0" }
+    return (
+      <TouchableOpacity onPress={() => navigation.navigate("Details", item)}>
+        <BlockRGB red={item.red} green={item.green} blue={item.blue} />
+      </TouchableOpacity>
+    );
   }
 
   function addColor() {
     setColorArray([
-      // gives us a random color
       {
-        red: Math.floor(Math.random() * 255), // "200"
-        green: Math.floor(Math.random() * 255), // "55"
-        blue: Math.floor(Math.random() * 255), // "145"
-        id: colorArray.length.toString(), // "1"
+        red: Math.floor(Math.random() * 255),
+        green: Math.floor(Math.random() * 255),
+        blue: Math.floor(Math.random() * 255),
+        id: colorArray.length.toString(),
       },
-      // will add the previous array/list of colour
       ...colorArray,
     ]);
   }
 
-  function resetColors() {
-    setColorArray([]);
-  }
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -44,17 +45,29 @@ function HomeScreen() {
       >
         <Text>Add Color</Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        onPress={resetColors}
-        style={{ height: 40, justifyContent: "center" }}
-      >
-        <Text>Reset</Text>
-      </TouchableOpacity>
+
       <FlatList
-        data={colorArray} // [ {red: 100}, {green: 100} ]
+        data={colorArray}
         renderItem={renderItem}
         style={{ width: "100%" }}
       />
+    </View>
+  );
+}
+
+function DetailsScreen({ route }) {
+  console.log(route);
+  const { red, green, blue } = route.params;
+  return (
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: `rgb( ${red}, ${green}, ${blue} )` },
+      ]}
+    >
+      <Text style={styles.detailText}>Red: {red}</Text>
+      <Text style={styles.detailText}>green: {green}</Text>
+      <Text style={styles.detailText}>blue: {blue}</Text>
     </View>
   );
 }
@@ -66,6 +79,7 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
