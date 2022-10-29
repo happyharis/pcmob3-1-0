@@ -11,9 +11,7 @@ import {
 import BlockRGB from "./components/BlockRGB";
 
 function HomeScreen() {
-  const [colorArray, setColorArray] = useState([
-    { red: 255, green: 0, blue: 0, id: "0" },
-  ]);
+  const [colorArray, setColorArray] = useState([]);
 
   function renderItem({ item }) {
     // function renderItem({ red: 255, green: 0, blue: 0, id: "0" }) {
@@ -34,6 +32,10 @@ function HomeScreen() {
       ...colorArray,
     ]);
   }
+
+  function resetColors() {
+    setColorArray([]);
+  }
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -41,6 +43,12 @@ function HomeScreen() {
         style={{ height: 40, justifyContent: "center" }}
       >
         <Text>Add Color</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={resetColors}
+        style={{ height: 40, justifyContent: "center" }}
+      >
+        <Text>Reset</Text>
       </TouchableOpacity>
       <FlatList
         data={colorArray} // [ {red: 100}, {green: 100} ]
